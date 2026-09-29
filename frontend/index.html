@@ -1,25 +1,23 @@
-```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Planner</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="app">
 
+    <!-- 상단 메뉴 -->
     <nav class="top-menu">
         <a href="#" class="menu-item active">계획생성</a>
         <a href="#" class="menu-item">계획조회</a>
         <a href="#" class="menu-item">마이페이지</a>
     </nav>
 
-
+    <!-- 오늘의 할 일 카드 -->
     <div class="card">
 
         <div class="card-title">
@@ -27,78 +25,12 @@
         </div>
 
         <p>
-            완료한 할 일 :
-            <strong id="completedCount">0</strong> / 4
+            완료한 할 일 : 
+            <strong id="completedCount">0</strong> / <span id="totalCount">0</span>
         </p>
 
-
-        <label class="task">
-
-            <input type="checkbox" class="task-check">
-
-            <div class="task-info">
-                <div class="task-name">
-                    자료구조 과제
-                </div>
-
-                <div class="task-time">
-                    10:00 ~ 11:00
-                </div>
-            </div>
-
-        </label>
-
-
-        <label class="task">
-
-            <input type="checkbox" class="task-check">
-
-            <div class="task-info">
-                <div class="task-name">
-                    영어단어 50개
-                </div>
-
-                <div class="task-time">
-                    11:30 ~ 12:00
-                </div>
-            </div>
-
-        </label>
-
-
-        <label class="task">
-
-            <input type="checkbox" class="task-check">
-
-            <div class="task-info">
-                <div class="task-name">
-                    전공공부
-                </div>
-
-                <div class="task-time">
-                    14:00 ~ 15:00
-                </div>
-            </div>
-
-        </label>
-
-
-        <label class="task">
-
-            <input type="checkbox" class="task-check">
-
-            <div class="task-info">
-                <div class="task-name">
-                    운동하기
-                </div>
-
-                <div class="task-time">
-                    18:00 ~ 19:00
-                </div>
-            </div>
-
-        </label>
-
+        <!-- JS에서 API 데이터를 받아 동적으로 태그가 생성되는 영역 -->
+        <div id="taskList"></div>
 
         <button class="start-btn" id="startStudyBtn">
             ▶ 공부 시작하기
@@ -106,7 +38,7 @@
 
     </div>
 
-
+    <!-- 나의 캐릭터 카드 -->
     <div class="card">
 
         <div class="card-title">
@@ -115,26 +47,26 @@
 
         <div class="character">
 
-            <div class="character-img">
+            <div class="character-img" id="characterImg">
                 캐릭터 이미지
             </div>
 
             <div class="character-info">
 
-                <div class="level">
+                <div class="level" id="userLevel">
                     Lv. 7 햇병아리
                 </div>
 
                 <div class="exp-text">
                     <span>EXP</span>
-                    <span>80 / 120</span>
+                    <span><span id="currentExp">80</span> / <span id="maxExp">120</span></span>
                 </div>
 
                 <div class="exp-bar">
-                    <div class="exp-progress"></div>
+                    <div class="exp-progress" id="expProgressBar" style="width: 66.6%;"></div>
                 </div>
 
-                <div class="next-level">
+                <div class="next-level" id="nextLevelText">
                     ⭐ 다음 레벨까지 40 EXP
                 </div>
 
@@ -146,9 +78,8 @@
 
 </div>
 
-
+<!-- API 연동 Script -->
 <script src="script.js"></script>
 
 </body>
 </html>
-```
