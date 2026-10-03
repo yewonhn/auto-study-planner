@@ -1,13 +1,13 @@
-package com.example.demo;
+package com.focusgrow.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class FocusGrowApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(FocusGrowApplication.class, args);
 	}
 
 }
