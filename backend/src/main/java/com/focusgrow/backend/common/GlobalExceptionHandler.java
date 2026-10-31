@@ -35,6 +35,14 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "요청 값의 형식이 올바르지 않습니다.");
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException e) { return build(HttpStatus.CONFLICT, e.getMessage()); }
+    @ExceptionHandler(org.springframework.web.bind.MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponse> handleMissingHeader(Exception e) { return build(HttpStatus.BAD_REQUEST, "X-User-Id 헤더가 필요합니다."); }
+
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParameter(Exception e) { return build(HttpStatus.BAD_REQUEST, "필수 조회 조건이 없습니다."); }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
         e.printStackTrace(); // 개발 중 원인 확인용 (콘솔에 출력)

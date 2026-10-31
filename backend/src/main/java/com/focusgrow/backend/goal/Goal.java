@@ -84,6 +84,8 @@ public class Goal {
         if (status != null) this.status = status;
     }
 
+    public void setProgressStatus(String status) { this.status = status; }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -1,40 +1,23 @@
 package com.focusgrow.backend.schedule;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
-
-@RestController
-@RequestMapping("/api/schedules")
+@RestController @RequestMapping("/api/schedules")
 public class ScheduleController {
-
-    // TODO: SCHEDULE 테이블 구현 후 실제 조회로 교체 (현재 임시 응답)
-    @GetMapping("/today")
-    public ResponseEntity<TodayScheduleResponse> today(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
-    ) {
-        ScheduleItem item = new ScheduleItem(1L, 1L, "책 10페이지 읽기", 10, "19:00", "19:30", false);
-        return ResponseEntity.ok(new TodayScheduleResponse(LocalDate.now(), List.of(item)));
-    }
-
-    // TODO: 실제 완료 처리(RECORD 생성, 캐릭터 경험치 반영) 구현 (현재 임시 응답)
-    @PatchMapping("/{scheduleId}/complete")
-    public ResponseEntity<CompleteResponse> complete(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
-            @PathVariable Long scheduleId
-    ) {
-        return ResponseEntity.ok(new CompleteResponse(scheduleId, true, LocalDateTime.now()));
-    }
-
-    public record ScheduleItem(
-            Long scheduleId, Long goalId, String title, Integer amount,
-            String startTime, String endTime, Boolean completed
-    ) {}
-
-    public record TodayScheduleResponse(LocalDate date, List<ScheduleItem> schedules) {}
-
-    public record CompleteResponse(Long scheduleId, Boolean completed, LocalDateTime completedAt) {}
+ private final ScheduleService service;
+ private final Clock clock;
+ public ScheduleController(ScheduleService service,Clock clock){this.service=service;this.clock=clock;}
+ @GetMapping("/today")
+ public TodayResponse today(@RequestHeader(value="X-User-Id") Long userId){
+  return new TodayResponse(LocalDate.now(clock),service.today(userId).stream().map(Item::new).toList());
+ }
+ @PatchMapping("/{scheduleId}/complete")
+ public CompleteResponse complete(@RequestHeader(value="X-User-Id") Long userId,@PathVariable Long scheduleId){
+  var s=service.complete(userId,scheduleId);return new CompleteResponse(s.getScheduleId(),s.isCompleted(),s.getCompletedAt());
+ }
+ public record Item(Long scheduleId,Long goalId,String title,Integer amount,LocalTime startTime,LocalTime endTime,boolean completed){
+  Item(Schedule s){this(s.getScheduleId(),s.getGoal().getGoalId(),s.getTitle(),s.getAmount(),s.getStartTime(),s.getEndTime(),s.isCompleted());}
+ }
+ public record TodayResponse(LocalDate date,List<Item> schedules){}
+ public record CompleteResponse(Long scheduleId,boolean completed,LocalDateTime completedAt){}
 }

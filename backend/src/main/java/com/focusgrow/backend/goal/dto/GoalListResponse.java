@@ -12,15 +12,17 @@ public class GoalListResponse {
     private final String title;
     private final LocalDate startDate;
     private final LocalDate endDate;
-    private final Integer progress; // TODO: SCHEDULE 구현 후 실제 계산 (현재 임시값 0)
+    private final Integer progress;
     private final String status;
 
-    public GoalListResponse(Goal goal) {
+    public GoalListResponse(Goal goal) { this(goal, 0); }
+
+    public GoalListResponse(Goal goal, int completedAmount) {
         this.goalId = goal.getGoalId();
         this.title = goal.getTitle();
         this.startDate = goal.getStartDate();
         this.endDate = goal.getEndDate();
-        this.progress = 0;
+        this.progress = (int) ((long) completedAmount * 100 / goal.getTotalAmount());
         this.status = goal.getStatus();
     }
 }

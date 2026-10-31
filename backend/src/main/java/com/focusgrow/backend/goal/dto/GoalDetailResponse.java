@@ -16,12 +16,14 @@ public class GoalDetailResponse {
     private final LocalDate endDate;
     private final Integer totalAmount;
     private final String unit;
-    private final Integer completedAmount; // TODO: 임시값 0
-    private final Integer progress;        // TODO: 임시값 0
+    private final Integer completedAmount;
+    private final Integer progress;
     private final Integer dailyAmount;
     private final String status;
 
-    public GoalDetailResponse(Goal goal) {
+    public GoalDetailResponse(Goal goal) { this(goal, 0); }
+
+    public GoalDetailResponse(Goal goal, int completedAmount) {
         this.goalId = goal.getGoalId();
         this.title = goal.getTitle();
         this.description = goal.getDescription();
@@ -29,8 +31,8 @@ public class GoalDetailResponse {
         this.endDate = goal.getEndDate();
         this.totalAmount = goal.getTotalAmount();
         this.unit = goal.getUnit();
-        this.completedAmount = 0;
-        this.progress = 0;
+        this.completedAmount = completedAmount;
+        this.progress = (int) ((long) completedAmount * 100 / goal.getTotalAmount());
         this.dailyAmount = calculateDailyAmount(goal);
         this.status = goal.getStatus();
     }

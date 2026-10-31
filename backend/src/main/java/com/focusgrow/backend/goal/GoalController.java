@@ -22,12 +22,12 @@ public class GoalController {
         this.goalService = goalService;
     }
 
-    // 임시: JWT 적용 전까지 X-User-Id 헤더로 사용자 구분 (없으면 1)
+    // 개발 전용 사용자 헤더. 실제 인증(JWT)은 별도 구현 대상이다.
     // TODO: JWT 적용 시 토큰에서 userId를 꺼내도록 교체
 
     @PostMapping
     public ResponseEntity<GoalResponse> createGoal(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id") Long userId,
             @RequestBody GoalCreateRequest request
     ) {
         Goal goal = goalService.createGoal(
@@ -44,34 +44,34 @@ public class GoalController {
 
     @GetMapping
     public ResponseEntity<List<GoalListResponse>> getGoals(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId
+            @RequestHeader(value = "X-User-Id") Long userId
     ) {
         List<GoalListResponse> goals = goalService.getGoals(userId).stream()
-                .map(GoalListResponse::new)
+                .map(g -> new GoalListResponse(g, goalService.completedAmount(g.getGoalId())))
                 .toList();
         return ResponseEntity.ok(goals);
     }
 
     @GetMapping("/{goalId}")
     public ResponseEntity<GoalDetailResponse> getGoal(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id") Long userId,
             @PathVariable Long goalId
     ) {
-        return ResponseEntity.ok(new GoalDetailResponse(goalService.getGoal(userId, goalId)));
+        return ResponseEntity.ok(new GoalDetailResponse(goalService.getGoal(userId, goalId), goalService.completedAmount(goalId)));
     }
 
     @PatchMapping("/{goalId}")
     public ResponseEntity<GoalDetailResponse> updateGoal(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id") Long userId,
             @PathVariable Long goalId,
             @RequestBody GoalUpdateRequest request
     ) {
-        return ResponseEntity.ok(new GoalDetailResponse(goalService.updateGoal(userId, goalId, request)));
+        return ResponseEntity.ok(new GoalDetailResponse(goalService.updateGoal(userId, goalId, request), goalService.completedAmount(goalId)));
     }
 
     @DeleteMapping("/{goalId}")
     public ResponseEntity<Map<String, String>> deleteGoal(
-            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId,
+            @RequestHeader(value = "X-User-Id") Long userId,
             @PathVariable Long goalId
     ) {
         goalService.deleteGoal(userId, goalId);
